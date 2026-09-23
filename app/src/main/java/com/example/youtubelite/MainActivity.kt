@@ -53,6 +53,34 @@ class MainActivity : AppCompatActivity() {
                 }
                 return false
             }
+
+            // --- SKRIP PEMBLOKIR IKLAN MULAI DI SINI ---
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                
+                val adBlockScript = """
+                    javascript:(function() {
+                        setInterval(function() {
+                            // Sembunyikan elemen banner iklan
+                            var ads = document.querySelectorAll('.ad-showing, .ad-container, .ytp-ad-overlay-container, .ytp-ad-image-overlay');
+                            ads.forEach(function(ad) { ad.style.display = 'none'; });
+                            
+                            // Auto-klik tombol "Skip Ad"
+                            var skipBtn = document.querySelector('.ytp-ad-skip-button, .ytp-ad-skip-button-modern, .ytp-skip-ad-button');
+                            if (skipBtn) { skipBtn.click(); }
+                            
+                            // Percepat video iklan yang tidak bisa di-skip
+                            var vid = document.querySelector('video');
+                            if (vid && document.querySelector('.ad-showing')) {
+                                vid.currentTime = vid.duration;
+                            }
+                        }, 500);
+                    })();
+                """.trimIndent()
+                
+                view?.evaluateJavascript(adBlockScript, null)
+            }
+            // --- SKRIP PEMBLOKIR IKLAN BERAKHIR DI SINI ---
         }
         
         webView.webChromeClient = object : WebChromeClient() {
