@@ -54,33 +54,40 @@ class MainActivity : AppCompatActivity() {
                 return false
             }
 
-            // --- SKRIP PEMBLOKIR IKLAN MULAI DI SINI ---
+            // --- SKRIP PEMBLOKIR IKLAN & CUSTOM LOGO RUMAH GADGET ---
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
                 
-                val adBlockScript = """
+                val combinedScript = """
                     javascript:(function() {
                         setInterval(function() {
-                            // Sembunyikan elemen banner iklan
+                            // 1. BLOKIR IKLAN & AUTO SKIP
                             var ads = document.querySelectorAll('.ad-showing, .ad-container, .ytp-ad-overlay-container, .ytp-ad-image-overlay');
                             ads.forEach(function(ad) { ad.style.display = 'none'; });
                             
-                            // Auto-klik tombol "Skip Ad"
                             var skipBtn = document.querySelector('.ytp-ad-skip-button, .ytp-ad-skip-button-modern, .ytp-skip-ad-button');
                             if (skipBtn) { skipBtn.click(); }
                             
-                            // Percepat video iklan yang tidak bisa di-skip
                             var vid = document.querySelector('video');
                             if (vid && document.querySelector('.ad-showing')) {
                                 vid.currentTime = vid.duration;
+                            }
+
+                            // 2. GANTI LOGO PREMIUM MENJADI RUMAH GADGET
+                            var ytLogo = document.querySelector('ytm-home-logo');
+                            if (ytLogo && !ytLogo.dataset.modified) {
+                                ytLogo.innerHTML = '<div style="display: flex; align-items: center; gap: 4px;">' +
+                                    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="#FF0000"><path d="M21.58 7.19c-.23-.86-.91-1.54-1.77-1.77C18.25 5 12 5 12 5s-6.25 0-7.81.42c-.86.23-1.54.91-1.77 1.77C2 8.75 2 12 2 12s0 3.25.42 4.81c.23.86.91 1.54 1.77 1.77C5.75 19 12 19 12 19s6.25 0 7.81-.42c.86-.23 1.54-.91 1.77-1.77C22 15.25 22 12 22 12s0-3.25-.42-4.81z"></path><path d="M10 15l5-3-5-3v6z" fill="#FFFFFF"></path></svg>' +
+                                    '<span style="font-family: Roboto, Arial, sans-serif; font-size: 19px; font-weight: 600; letter-spacing: -0.5px; color: var(--ytm-spec-text-primary, #0f0f0f);">Rumah Gadget</span>' +
+                                '</div>';
+                                ytLogo.dataset.modified = 'true';
                             }
                         }, 500);
                     })();
                 """.trimIndent()
                 
-                view?.evaluateJavascript(adBlockScript, null)
+                view?.evaluateJavascript(combinedScript, null)
             }
-            // --- SKRIP PEMBLOKIR IKLAN BERAKHIR DI SINI ---
         }
         
         webView.webChromeClient = object : WebChromeClient() {
