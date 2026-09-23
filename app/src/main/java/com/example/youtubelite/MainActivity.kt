@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
                 return false
             }
 
-            // --- SKRIP PEMBLOKIR IKLAN & CUSTOM LOGO RUMAH GADGET ---
+            // --- SKRIP PEMBLOKIR IKLAN & CUSTOM LOGO RUMAH GADGET (SUPPORT ANDROID LAWAS & BARU) ---
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
                 
@@ -73,16 +73,19 @@ class MainActivity : AppCompatActivity() {
                                 vid.currentTime = vid.duration;
                             }
 
-                            // 2. GANTI LOGO PREMIUM MENJADI RUMAH GADGET
-                            var ytLogo = document.querySelector('ytm-home-logo');
-                            if (ytLogo && !ytLogo.dataset.modified) {
-                                ytLogo.innerHTML = '<div style="display: flex; align-items: center; gap: 4px;">' +
-                                    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="#FF0000"><path d="M21.58 7.19c-.23-.86-.91-1.54-1.77-1.77C18.25 5 12 5 12 5s-6.25 0-7.81.42c-.86.23-1.54.91-1.77 1.77C2 8.75 2 12 2 12s0 3.25.42 4.81c.23.86.91 1.54 1.77 1.77C5.75 19 12 19 12 19s6.25 0 7.81-.42c.86-.23 1.54-.91 1.77-1.77C22 15.25 22 12 22 12s0-3.25-.42-4.81z"></path><path d="M10 15l5-3-5-3v6z" fill="#FFFFFF"></path></svg>' +
-                                    '<span style="font-family: Roboto, Arial, sans-serif; font-size: 19px; font-weight: 600; letter-spacing: -0.5px; color: var(--ytm-spec-text-primary, #0f0f0f);">Rumah Gadget</span>' +
-                                '</div>';
-                                ytLogo.dataset.modified = 'true';
+                            // 2. GANTI LOGO YANG KUAT UNTUK SEMUA VERSI ANDROID
+                            var ytLogo = document.querySelector('ytm-home-logo') || document.querySelector('.mobile-topbar-header-content');
+                            if (ytLogo) {
+                                var targetLogo = ytLogo.querySelector('a') || ytLogo;
+                                if (!targetLogo.dataset.rgModified) {
+                                    targetLogo.innerHTML = '<div style="display: flex; align-items: center; gap: 4px; padding: 2px 0;">' +
+                                        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26" fill="#FF0000"><path d="M21.58 7.19c-.23-.86-.91-1.54-1.77-1.77C18.25 5 12 5 12 5s-6.25 0-7.81.42c-.86.23-1.54.91-1.77 1.77C2 8.75 2 12 2 12s0 3.25.42 4.81c.23.86.91 1.54 1.77 1.77C5.75 19 12 19 12 19s6.25 0 7.81-.42c.86-.23 1.54-.91 1.77-1.77C22 15.25 22 12 22 12s0-3.25-.42-4.81z"></path><path d="M10 15l5-3-5-3v6z" fill="#FFFFFF"></path></svg>' +
+                                        '<span style="font-family: Roboto, Arial, sans-serif; font-size: 18px; font-weight: 600; letter-spacing: -0.5px; color: var(--ytm-spec-text-primary, #0f0f0f);">Rumah Gadget</span>' +
+                                    '</div>';
+                                    targetLogo.dataset.rgModified = 'true';
+                                }
                             }
-                        }, 500);
+                        }, 300);
                     })();
                 """.trimIndent()
                 
